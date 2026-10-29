@@ -1,0 +1,23 @@
+# credentials and local environments
+**/.env
+**/.env.*
+!**/.env.example
+**/.azure/
+**/secrets.json
+**/appsettings.Development.json
+
+# build outputs
+**/bin/
+**/obj/
+**/.checkpoints/
+**/*.user
+**/*.suo
+**/.vs/
+**/.idea/
+
+# local data
+local-memory/data/
+local-memory/logs/
+
+# private demo-day copy with live links
+docs/DEMO-GUIDE.local.md

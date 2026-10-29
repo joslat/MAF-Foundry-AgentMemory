@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: hosted-memory-context
+infra:
+    provider: microsoft.foundry
+services:
+    ai-project:
+        host: azure.ai.project
+        # Existing project, from the azd environment (azd env set FOUNDRY_PROJECT_ENDPOINT ...).
+        # This line is what makes azd reuse the project instead of creating a new account.
+        endpoint: ${FOUNDRY_PROJECT_ENDPOINT}
+    hosted-memory-context:
+        project: .
+        host: azure.ai.agent
+        language: csharp
+        uses:
+            - ai-project
+        codeConfiguration:
+            dependencyResolution: remote_build
+            entryPoint: HostedMemoryContext.dll
+            runtime: dotnet_10
+        # ASPNETCORE_URLS pins the listen port Foundry probes (8088); without it invokes fail with
+        # 424 session_not_ready on older hosting packages.
+        # MEMORY_MCP_URL / MEMORY_TUNNEL_TOKEN reach the AgentMemory MCP host on the presenter's PC
+        # through an authenticated Dev Tunnel. Set them with `azd env set`, never in this file.
+        env:
+            ASPNETCORE_URLS: http://+:8088
+            AZURE_AI_MODEL_DEPLOYMENT_NAME: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+            MEMORY_MCP_URL: ${MEMORY_MCP_URL}
+            MEMORY_TUNNEL_TOKEN: ${MEMORY_TUNNEL_TOKEN}
+        container:
+            resources:
+                cpu: "0.5"
+                memory: 1Gi
+        description: |
+            Hosted MAF agent with an AIContextProvider that recalls from an AgentMemory MCP host (Neo4j) on the presenter PC before every model call. No model-selected memory tool.
+        kind: hosted
+        metadata:
+            tags:
+                - AI Agent Hosting
+                - Azure AI AgentServer
+                - Agent Framework
+                - AgentMemory
+        name: hosted-memory-context
+        protocols:
+            - protocol: responses
+              version: 2.0.0

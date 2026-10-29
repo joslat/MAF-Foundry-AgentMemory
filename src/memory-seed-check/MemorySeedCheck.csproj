@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Preparation tool, never deployed. Talks to the AgentMemory MCP host as a plain MCP client:
+      dotnet run - - seed    writes one synthetic preference (host must be writable, no tunnel yet)
+      dotnet run - - check   recalls it through memory_search, with no chat model involved
+      dotnet run - - tools   lists the tools the host advertises (proves read-only filtering)
+      dotnet run - - call <tool> <json>   raw tool call for diagnostics
+    MEMORY_MCP_URL selects the target. A non-loopback URL must be https and needs
+    MEMORY_TUNNEL_TOKEN, sent as "X-Tunnel-Authorization: tunnel <token>".
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MemorySeedCheck</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageReference Include="DotNetEnv" Version="3.2.0" />
+  </ItemGroup>
+
+</Project>
